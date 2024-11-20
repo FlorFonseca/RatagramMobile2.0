@@ -42,8 +42,8 @@ export default function Login() {
       const data = await response.json();
       if (response.ok) {
         saveToken(data.token);
-        Alert.alert("Login", "Login exitoso" );
-        //router.push("/feed") //Para navegar al feed cuando lo tengamos
+        //Alert.alert("Login", "Login exitoso" );
+        router.push(`(tabs)/(inicio)`) //Para navegar al feed cuando lo tengamos
       }else{
         Alert.alert("Error", "Credenciales incorrectas");
       }
