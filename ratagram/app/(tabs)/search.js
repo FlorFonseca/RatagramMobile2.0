@@ -12,7 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const getUsers = async () => {
   const token = await AsyncStorage.getItem("token");
-  const usersFetch = await fetch("http://192.168.14.64:3001/api/user/all", {
+  const usersFetch = await fetch("http://192.168.48.64:3001/api/user/all", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
