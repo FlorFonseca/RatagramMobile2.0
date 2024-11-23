@@ -14,7 +14,7 @@ import {
 import { useToken } from "@/context/TokenContext";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useTheme } from 'react-native-elements';
+import { useTheme } from "react-native-elements";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -31,7 +31,11 @@ export default function Login() {
       return;
     }
     try {
-      const response = await fetch("http://10.13.165.217:3001/api/auth/login", {
+      //Feed-del-usuario
+      const response = await fetch("http://10.13.222.152:3001/api/auth/login", {
+
+      //const response = await fetch("http://10.13.165.217:3001/api/auth/login", {
+        //main
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,8 +47,8 @@ export default function Login() {
       if (response.ok) {
         saveToken(data.token);
         //Alert.alert("Login", "Login exitoso" );
-        router.push(`(tabs)/(inicio)`) //Para navegar al feed cuando lo tengamos
-      }else{
+        router.push(`(tabs)/(inicio)`); //Para navegar al feed cuando lo tengamos
+      } else {
         Alert.alert("Error", "Credenciales incorrectas");
       }
     } catch (error) {
