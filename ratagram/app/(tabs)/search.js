@@ -10,6 +10,7 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import friendProfile from "./(inicio)/friendProfile";
 
 const getUsers = async () => {
   const token = await AsyncStorage.getItem("token");
@@ -51,7 +52,8 @@ const Dropdown = () => {
   };
 
   const handleUserClick = (userId) => {
-    navigation.navigate("FriendProfile", { userId });
+    navigation.navigate("friendProfile", { userId });
+    console.log("userId: " + userId);
   };
 
   return (
