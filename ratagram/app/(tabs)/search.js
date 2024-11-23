@@ -6,8 +6,8 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
-  SafeAreaView,
 } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -55,33 +55,37 @@ const Dropdown = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>
-        <TextInput
-          style={{
-            height: 40,
-            borderColor: "gray",
-            borderWidth: 1,
-            marginBottom: 10,
-            backgroundColor: "white",
-            color: "black",
-            paddingHorizontal: 8,
-          }}
-          placeholder="Buscar usuario..."
-          value={searchTerm}
-          onChangeText={handleInputChange}
-        />
-        <FlatList
-          data={filteredUsers}
-          keyExtractor={(item) => item._id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleUserClick(item._id)}>
-              <Text style={{ padding: 10, fontSize: 16 }}>{item.username}</Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+        <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>
+          <TextInput
+            style={{
+              height: 40,
+              borderColor: "gray",
+              borderWidth: 1,
+              marginBottom: 10,
+              backgroundColor: "white",
+              color: "black",
+              paddingHorizontal: 8,
+            }}
+            placeholder="Buscar usuario..."
+            value={searchTerm}
+            onChangeText={handleInputChange}
+          />
+          <FlatList
+            data={filteredUsers}
+            keyExtractor={(item) => item._id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => handleUserClick(item._id)}>
+                <Text style={{ padding: 10, fontSize: 16 }}>
+                  {item.username}
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
