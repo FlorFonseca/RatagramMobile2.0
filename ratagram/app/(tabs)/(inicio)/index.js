@@ -1,8 +1,6 @@
 /**Este sería el feed */
-import React, {useState, useEffect} from "react";
-import { router } from "expo-router";
+
 import {
-  View,
   Image,
   StyleSheet,
   Platform,
@@ -16,87 +14,77 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function MyFeed() {
-  const [posts, setPosts] = useState([]);
-  const [message, setMessage] = useState("");
-
-  const handleFeed = async () => {
-    try {
-      const response = await fetch ("http://localhost:3001/api/posts/feed", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      
-      const data = await response.json();
-
-      if (response.ok) {
-        setPosts(data ||[]);
-      } else {
-        setMessage(data.message || "Error al cargar el feed");
-        if (response.status === 401) {
-          localStorage.removeItem("token");
-          navigate("/login");
-        }
-      }
-    } catch(error) {
-      setMessage("Error en el servidor");
-      console.error("Error al cargar el feed: ", error);
-    }
-  };
-
-  useEffect(() => {
-    handleFeed();
-  }, []);
-
+export default function HomeScreen() {
   return (
-    <View style={styles.feedRatagram}>
-      <Text style={styles.titulo}></Text>
-      {message && <Text>{message}</Text>}
-      {posts && posts.length > 0 ? (
-        <FlatList
-          data={posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))}
-          keyExtractor={(item) => item.createdAt.toString()}
-          renderItem={({ item: post }) => (
-            <Publicacion
-              key={post.createdAt}
-              id={post._id}
-              username={post.user.username}
-              userId={post.user._id}
-              refreshFeed={handleFeed}
-              photo={post.imageUrl}
-              description={post.caption}
-              Likes={post.likes}
-              Comments={post.comments}
-            />
-          )}
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
+      headerImage={
+        <Image
+          source={require("@/assets/images/partial-react-logo.png")}
+          style={styles.reactLogo}
         />
-      ) : (
-        <Text style={styles.noPosts}>No hay publicaciones disponibles.</Text>
-      )}
-      <PersistentDrawerLeft />
-    </View>
+      }
+    >
+      <TouchableOpacity onPress={() => AsyncStorage.removeItem("token")}>
+        <Text>Remove token</Text>
+      </TouchableOpacity>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title">Welcome!</ThemedText>
+        <HelloWave />
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText>
+          Edit{" "}
+          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
+          to see changes. Press{" "}
+          <ThemedText type="defaultSemiBold">
+            {Platform.select({
+              ios: "cmd + d",
+              android: "cmd + m",
+              web: "F12",
+            })}
+          </ThemedText>{" "}
+          to open developer tools.
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
+        <ThemedText>
+          Tap the Explore tab to learn more about what's included in this
+          starter app.
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.stepContainer}>
+        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+        <ThemedText>
+          When you're ready, run{" "}
+          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText>{" "}
+          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
+          directory. This will move the current{" "}
+          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
+          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
+        </ThemedText>
+      </ThemedView>
+    </ParallaxScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  feedRatagram: {
-    maxWidth: 600,
-    marginHorizontal: 'auto',
-    paddingVertical: 20,
-    fontFamily: 'Arial',
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
-  titulo: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#333',
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
   },
-  noPosts: {
-    textAlign: 'center',
-    color: '#888',
-    fontSize: 14,
-    marginTop: 10,
+  reactLogo: {
+    height: 178,
+    width: 290,
+    bottom: 0,
+    left: 0,
+    position: "absolute",
   },
 });
