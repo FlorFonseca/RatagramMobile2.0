@@ -10,6 +10,8 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Tabs } from "expo-router";
+import { useRouter } from "expo-router";
 import friendProfile from "./(inicio)/friendProfile";
 
 const getUsers = async () => {
@@ -29,7 +31,8 @@ const Dropdown = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const navigation = useNavigation();
+  //const navigation = useNavigation();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -52,7 +55,7 @@ const Dropdown = () => {
   };
 
   const handleUserClick = (userId) => {
-    navigation.navigate("friendProfile", { userId });
+    router.push("friendProfile", { userId });
     console.log("userId: " + userId);
   };
 
