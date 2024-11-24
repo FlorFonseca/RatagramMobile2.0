@@ -17,13 +17,15 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const { saveToken } = useToken();
+  const { saveToken, saveUserData} = useToken();
   const { theme } = useTheme();
 
   const handleSignUp = async () => {
     try {
       const response = await fetch(
-        "http://192.168.48.64:3001/api/auth/register",
+
+        "http://192.168.1.6:3001/api/auth/register",
+
         {
           method: "POST",
           headers: {
@@ -36,6 +38,7 @@ export default function Register() {
       const data = await response.json();
 
       if (response.ok) {
+        saveUserData(data);
         saveToken(data.token);
         Alert.alert("SignUp", "Registro exitoso");
         router.push(`(tabs)/(inicio)`);

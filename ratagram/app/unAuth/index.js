@@ -19,7 +19,7 @@ import { useTheme } from "react-native-elements";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { saveToken } = useToken();
+  const { saveToken, saveUserData } = useToken();
   const { theme } = useTheme();
 
   const handleLogin = async () => {
@@ -31,7 +31,9 @@ export default function Login() {
       return;
     }
     try {
-      const response = await fetch("http://192.168.48.64:3001/api/auth/login", {
+
+      const response = await fetch("http://192.168.1.6:3001/api/auth/login", {
+
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,6 +43,7 @@ export default function Login() {
 
       const data = await response.json();
       if (response.ok) {
+        saveUserData(data);
         saveToken(data.token);
         //Alert.alert("Login", "Login exitoso" );
         router.push(`(tabs)/(inicio)`); //Para navegar al feed cuando lo tengamos
