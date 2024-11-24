@@ -31,7 +31,7 @@ export default function Login() {
       return;
     }
     try {
-      const response = await fetch("http://192.168.1.25:3001/api/auth/login", {
+      const response = await fetch("http://192.168.1.35:3001/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +40,9 @@ export default function Login() {
       });
 
       const data = await response.json();
+      console.log("Respuesta del servidor:", data);
       if (response.ok) {
+        console.log("Token recibido:", data.token);
         saveToken(data.token);
         //Alert.alert("Login", "Login exitoso" );
         router.push(`(tabs)/(inicio)`) //Para navegar al feed cuando lo tengamos

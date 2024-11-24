@@ -17,8 +17,9 @@ import { useTheme } from "react-native-elements";
 export default function Register (){
     return (
       <ThemedView style={styles.container}>
-        <ThemedText style={styles.title}>Register</ThemedText>
+        <ThemedText style={styles.title}>Register</ThemedText> 
       </ThemedView>
+      
     );
 } 
 

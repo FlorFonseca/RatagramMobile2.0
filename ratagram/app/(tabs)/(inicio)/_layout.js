@@ -7,7 +7,15 @@ export default function HomeLayout() {
       <Stack.Screen
         name="friendProfile"
         options={{
-          headerShown: false,
+          headerShown: true,
+          title: "Perfil Amigo",
+        }}
+      />
+      <Stack.Screen
+        name="postDetails"
+        options={{
+          headerShown: true,
+          title: "Detalles de Publicación",
         }}
       />
     </Stack>
