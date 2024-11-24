@@ -15,8 +15,8 @@ import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function MyProfile() {
-  const { token } = useToken();
-  const [userData, setUserData] = useState(null);
+  const { token, userData} = useToken();
+  const [userInfo, setUserInfo] = useState(null);
   const [posts, setPosts] = useState([]);
   const [friends, setFriends] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
@@ -28,31 +28,24 @@ export default function MyProfile() {
   const [newDescription, setNewDescription] = useState("");
   const [message, setMessage] = useState("");
 
-  const getToken = async () => {
-    try {
-      const storedToken = await AsyncStorage.getItem("token");
-      return storedToken;
-    } catch (error) {
-      console.error("Error al obtener el token", error);
-      return null;
-    }
-  };
+  console.log(userData)
+  console.log(AsyncStorage.getItem('token'))
 
   useEffect(() => {
-    const handleProfile = async (storedToken) => {
+    const handleProfile = async () => {
       try {
         const response = await fetch(
-          `http://192.168.1.6:3001/api/user/profile/${userData?.id}`,
+          `http://192.168.1.6:3001/api/user/profile/${userData?._id}`,
           {
             headers: {
-              Authorization: `Bearer ${storedToken}`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
 
         if (response.ok) {
           const DataUser = await response.json();
-          setUserData(DataUser.user);
+          setUserInfo(DataUser.user);
           setFriends(DataUser.user.friends);
           setPosts(DataUser.posts);
           setPostsStatistics(DataUser.posts.length);
@@ -67,15 +60,8 @@ export default function MyProfile() {
       }
     };
 
-    const fetchData = async () => {
-      const storedToken = await getToken();
-      if (storedToken) {
-        handleProfile(storedToken);
-      }
-    };
-
-    fetchData();
-  }, [token]); // Cambié la dependencia a `token`
+    handleProfile();
+  }, [userData, token]); // Cambié la dependencia a `token`
 
   const handleOpenModal = (post) => {
     setSelectedPost(post);
@@ -109,7 +95,7 @@ export default function MyProfile() {
 
       if (response.ok) {
         const updatedData = await response.json();
-        setUserData(updatedData.user);
+        setUserInfo(updatedData.user);
         setIsEditing(false);
         setMessage("Perfil actualizado con éxito");
       } else {
@@ -132,9 +118,9 @@ export default function MyProfile() {
                 onChangeText={setNewProfilePicture}
                 placeholder="URL de la nueva imagen"
               />
-            ) : userData?.profileImage ? (
+            ) : userInfo?.profileImage ? (
               <Image
-                source={{ uri: userData.profileImage }}
+                source={{ uri: userInfo.profileImage }}
                 style={styles.profileImage}
               />
             ) : (
@@ -150,7 +136,7 @@ export default function MyProfile() {
                   onChangeText={setNewUsername}
                 />
               ) : (
-                userData?.username
+                userInfo?.username
               )}
             </Text>
             <Text style={styles.description}>
@@ -162,7 +148,7 @@ export default function MyProfile() {
                   placeholder="Descripción"
                 />
               ) : (
-                userData?.description
+                userInfo?.description
               )}
             </Text>
             <View style={styles.profileStats}>

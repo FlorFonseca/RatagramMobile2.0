@@ -19,7 +19,7 @@ import { useTheme } from 'react-native-elements';
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { saveToken } = useToken();
+  const { saveToken, saveUserData } = useToken();
   const { theme } = useTheme();
 
   const handleLogin = async () => {
@@ -41,6 +41,7 @@ export default function Login() {
 
       const data = await response.json();
       if (response.ok) {
+        saveUserData(data);
         saveToken(data.token);
         //Alert.alert("Login", "Login exitoso" );
         router.push(`(tabs)/(inicio)`) //Para navegar al feed cuando lo tengamos
