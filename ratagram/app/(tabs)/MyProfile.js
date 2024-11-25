@@ -35,7 +35,7 @@ export default function MyProfile() {
     const handleProfile = async () => {
       try {
         const response = await fetch(
-          `http://192.168.1.6:3001/api/user/profile/${userData?._id}`,
+          `http://192.168.1.25:3001/api/user/profile/${userData?._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

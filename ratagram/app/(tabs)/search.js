@@ -16,7 +16,7 @@ import friendProfile from "./(inicio)/friendProfile";
 
 const getUsers = async () => {
   const token = await AsyncStorage.getItem("token");
-  const usersFetch = await fetch("http://192.168.48.64:3001/api/user/all", {
+  const usersFetch = await fetch("http://192.168.1.25:3001/api/user/all", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
