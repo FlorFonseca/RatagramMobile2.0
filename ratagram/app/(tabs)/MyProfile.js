@@ -35,7 +35,7 @@ export default function MyProfile() {
     const handleProfile = async () => {
       try {
         const response = await fetch(
-          `http://192.168.1.6:3001/api/user/profile/${userData?._id}`,
+          `http://192.168.1.25:3001/api/user/profile/${userData?._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -51,7 +51,7 @@ export default function MyProfile() {
           setPostsStatistics(DataUser.posts.length);
           setFriendsStatistics(DataUser.user.friends.length);
           setNewUsername(DataUser.user.username);
-          setNewProfilePicture(DataUser.user.profileImage);
+          setNewProfilePicture(DataUser.user.profilePicture);
           setNewDescription(DataUser.user.description);
           setMessage("Perfil cargado");
         }
@@ -78,7 +78,7 @@ export default function MyProfile() {
   const handleEditProfile = async () => {
     try {
       const response = await fetch(
-        `http://192.168.1.6:3001/api/user/profile/edit`,
+        `http://192.168.1.25:3001/api/user/profile/edit`,
         {
           method: "PUT",
           body: JSON.stringify({
@@ -118,9 +118,9 @@ export default function MyProfile() {
                 onChangeText={setNewProfilePicture}
                 placeholder="URL de la nueva imagen"
               />
-            ) : userInfo?.profileImage ? (
+            ) : userInfo?.profilePicture ? (
               <Image
-                source={{ uri: userInfo.profileImage }}
+                source={{ uri: userInfo.profilePicture }}
                 style={styles.profileImage}
               />
             ) : (
@@ -157,12 +157,27 @@ export default function MyProfile() {
             </View>
             <View style={styles.profileEditBtn}>
               {isEditing ? (
-                <>
-                  <Button title="Save" onPress={handleEditProfile} />
-                  <Button title="Cancel" onPress={handleEditClick} />
-                </>
+                <View style={styles.editButtonsContainer}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleEditProfile}
+                  >
+                    <Text style={styles.buttonText}>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.button, styles.buttonCancel]}
+                    onPress={handleEditClick}
+                  >
+                    <Text style={styles.buttonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
               ) : (
-                <Button title="Edit Profile" onPress={handleEditClick} />
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleEditClick}
+                >
+                  <Text style={styles.buttonText}>Editar perfil</Text>
+                </TouchableOpacity>
               )}
             </View>
           </View>
@@ -171,7 +186,7 @@ export default function MyProfile() {
           {posts.length > 0 ? (
             posts.map((post) => (
               <TouchableOpacity
-                key={post.id}
+                key={post._id}
                 onPress={() => handleOpenModal(post)}
               >
                 <View style={styles.userPublicacion}>
@@ -198,6 +213,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
+  },
+  editButtonsContainer: {
+    flexDirection: "row", // Organiza los botones en una columna
+    alignItems: "center", // Centra los botones horizontalmente
+    gap: 10, // Espaciado entre los botones (solo si tu versión de React Native soporta `gap`)
   },
   profileHeader: {
     flexDirection: "row",
@@ -235,16 +255,24 @@ const styles = StyleSheet.create({
   },
   profileStats: {
     flexDirection: "row",
-    justifyContent: "flex-start",
-    gap: 20,
-    textAlign: "center",
-    fontSize: 16,
+    justifyContent: "space-between",
+    marginVertical: 10,
   },
   profileEditBtn: {
+    flexDirection: "row",
     marginTop: 10,
   },
-  editingBtn: {
-    margin: 5,
+  button: {
+    backgroundColor: "#007bff", // Color del botón
+    paddingVertical: 10, // Altura del botón
+    paddingHorizontal: 20, // Ancho del botón
+    borderRadius: 5, // Bordes redondeados
+    marginVertical: 5, // Espaciado entre los botones si `gap` no está disponible
+  },
+  buttonText: {
+    color: "#fff", // Color del texto
+    fontSize: 16,
+    textAlign: "center",
   },
   profilePosts: {
     marginTop: 10,
@@ -253,8 +281,8 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   userPublicacion: {
-    width: "100%",
-    paddingBottom: "100%",
+    width: "48%",
+    aspectRatio: 1,
     backgroundColor: "#f0f0f0",
     borderRadius: 8,
     justifyContent: "center",
@@ -266,5 +294,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginVertical: 5,
     borderRadius: 5,
+    height:"100%",
+    width:"100%",
   },
 });
