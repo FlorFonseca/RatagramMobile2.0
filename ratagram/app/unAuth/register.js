@@ -12,6 +12,7 @@ import { useToken } from "@/context/TokenContext";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "react-native-elements";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -50,48 +51,50 @@ export default function Register() {
   };
 
   return (
-    <ThemedView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
-      <ThemedText style={styles.title}>SignUp</ThemedText>
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+      <ThemedView
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
+        <ThemedText style={styles.title}>SignUp</ThemedText>
 
-      <ThemedText style={styles.label}>User Name</ThemedText>
-      <TextInput
-        style={[styles.input, { color: theme.colors.primary }]}
-        value={userName}
-        onChangeText={(text) => setUserName(text)}
-        placeholder="Ingresa tu nombre de usuario"
-        placeholderTextColor={theme.colors.grey0}
-        autoCapitalize="none"
-      />
+        <ThemedText style={styles.label}>User Name</ThemedText>
+        <TextInput
+          style={[styles.input, { color: theme.colors.primary }]}
+          value={userName}
+          onChangeText={(text) => setUserName(text)}
+          placeholder="Ingresa tu nombre de usuario"
+          placeholderTextColor={theme.colors.grey0}
+          autoCapitalize="none"
+        />
 
-      <ThemedText style={styles.label}>Email</ThemedText>
-      <TextInput
-        style={[styles.input, { color: theme.colors.primary }]}
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        placeholder="Ingresa tu email"
-        placeholderTextColor={theme.colors.grey0}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        <ThemedText style={styles.label}>Email</ThemedText>
+        <TextInput
+          style={[styles.input, { color: theme.colors.primary }]}
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          placeholder="Ingresa tu email"
+          placeholderTextColor={theme.colors.grey0}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
 
-      <ThemedText style={styles.label}>Password</ThemedText>
-      <TextInput
-        style={[styles.input, { color: theme.colors.primary }]}
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        placeholder="Ingresa tu contraseña"
-        placeholderTextColor={theme.colors.grey0}
-        secureTextEntry
-      />
+        <ThemedText style={styles.label}>Password</ThemedText>
+        <TextInput
+          style={[styles.input, { color: theme.colors.primary }]}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+          placeholder="Ingresa tu contraseña"
+          placeholderTextColor={theme.colors.grey0}
+          secureTextEntry
+        />
 
-      <ThemedView style={styles.buttonGroup}>
-        <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-          <ThemedText style={styles.buttonText}>Register</ThemedText>
-        </TouchableOpacity>
+        <ThemedView style={styles.buttonGroup}>
+          <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+            <ThemedText style={styles.buttonText}>Register</ThemedText>
+          </TouchableOpacity>
+        </ThemedView>
       </ThemedView>
-    </ThemedView>
+    </SafeAreaView>
   );
 }
 

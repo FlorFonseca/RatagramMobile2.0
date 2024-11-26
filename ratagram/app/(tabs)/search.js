@@ -61,7 +61,7 @@ const Dropdown = () => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+      <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
         <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>
           <TextInput
             style={{

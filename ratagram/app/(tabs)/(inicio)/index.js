@@ -1,4 +1,3 @@
-/**Este sería el feed */
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -6,18 +5,19 @@ import {
   FlatList,
   StyleSheet,
   Alert,
-  SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Publicacion from "@/components/Publicacion";
 import { router } from "expo-router";
 import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyFeed() {
   const [posts, setPosts] = useState([]);
   const [message, setMessage] = useState("");
-  const { token} = useToken();
+  const { token } = useToken();
 
   const handleFeed = async () => {
     try {
@@ -47,10 +47,14 @@ export default function MyFeed() {
 
   useEffect(() => {
     handleFeed();
-  }, []);
+  }, [posts]);
+
+  const goToUpload = () => {
+    router.push(`/(tabs)/(inicio)/upload`);
+  };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView edges={["bottom"]} style={{flex:1}}>
       <View style={styles.feedContainer}>
         {message ? (
           <Text style={styles.message}>{message}</Text>
@@ -76,19 +80,21 @@ export default function MyFeed() {
         ) : (
           <Text style={styles.noPosts}>No hay publicaciones disponibles.</Text>
         )}
+
+        <TouchableOpacity style={styles.floatingButton} onPress={goToUpload}>
+          <MaterialIcons name="add-circle-outline" size={24} color="black" />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   feedContainer: {
-    flex: 1,
     backgroundColor: "#fff",
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+
   },
   message: {
     color: "red",
@@ -99,5 +105,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#888",
     marginTop: 20,
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "lightblue",
+    width: 60,
+    height: 60,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

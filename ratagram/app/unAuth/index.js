@@ -15,6 +15,7 @@ import { useToken } from "@/context/TokenContext";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "react-native-elements";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -56,44 +57,46 @@ export default function Login() {
   };
 
   return (
-    <ThemedView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
-    >
-      <ThemedText style={styles.title}>Ratagram</ThemedText>
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+      <ThemedView
+        style={[styles.container, { backgroundColor: theme.colors.background }]}
+      >
+        <ThemedText style={styles.title}>Ratagram</ThemedText>
 
-      <ThemedText style={styles.label}>Email</ThemedText>
-      <TextInput
-        style={[styles.input, { color: theme.colors.primary }]}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Ingresa tu email"
-        placeholderTextColor={theme.colors.grey0}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+        <ThemedText style={styles.label}>Email</ThemedText>
+        <TextInput
+          style={[styles.input, { color: theme.colors.primary }]}
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Ingresa tu email"
+          placeholderTextColor={theme.colors.grey0}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
 
-      <ThemedText style={styles.label}>Password</ThemedText>
-      <TextInput
-        style={[styles.input, { color: theme.colors.primary }]}
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Ingresa tu contraseña"
-        placeholderTextColor={theme.colors.grey0}
-        secureTextEntry
-      />
+        <ThemedText style={styles.label}>Password</ThemedText>
+        <TextInput
+          style={[styles.input, { color: theme.colors.primary }]}
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Ingresa tu contraseña"
+          placeholderTextColor={theme.colors.grey0}
+          secureTextEntry
+        />
 
-      <ThemedView style={styles.buttonGroup}>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <ThemedText style={styles.buttonText}>Login</ThemedText>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.push(`/unAuth/register`)}
-        >
-          <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
-        </TouchableOpacity>
+        <ThemedView style={styles.buttonGroup}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <ThemedText style={styles.buttonText}>Login</ThemedText>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.push(`/unAuth/register`)}
+          >
+            <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
+          </TouchableOpacity>
+        </ThemedView>
       </ThemedView>
-    </ThemedView>
+    </SafeAreaView>
   );
 }
 
