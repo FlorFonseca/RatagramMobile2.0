@@ -5,25 +5,17 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Tabs } from "expo-router";
 import { useRouter } from "expo-router";
-import friendProfile from "./(inicio)/friendProfile";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const getUsers = async () => {
   const token = await AsyncStorage.getItem("token");
-  const usersFetch = await fetch("http://192.168.48.64:3001/api/user/all", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+  const response = await fetch("http://192.168.1.4:3001/api/user/all", {
+    headers: { Authorization: `Bearer ${token}` },
   });
-  const users = await usersFetch.json();
-  console.log(users);
-  console.log("token (este token wachiin): " + token);
+  const users = await response.json();
   return users;
 };
 
@@ -31,7 +23,6 @@ const Dropdown = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  //const navigation = useNavigation();
   const router = useRouter();
 
   useEffect(() => {
@@ -55,23 +46,24 @@ const Dropdown = () => {
   };
 
   const handleUserClick = (userId) => {
-    router.push("friendProfile", { userId });
-    console.log("userId: " + userId);
+    router.push({
+      pathname: "/friendProfile",
+      params: { friendId: userId },
+    });
   };
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>
+        <View style={{ flex: 1, padding: 20 }}>
           <TextInput
             style={{
               height: 40,
               borderColor: "gray",
               borderWidth: 1,
               marginBottom: 10,
-              backgroundColor: "white",
-              color: "black",
               paddingHorizontal: 8,
+              backgroundColor: "white",
             }}
             placeholder="Buscar usuario..."
             value={searchTerm}

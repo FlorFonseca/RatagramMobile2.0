@@ -12,6 +12,11 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-, "app/(tabs)/(inicio)/index.js", "app/(tabs)/MyProfile.js", "app/(tabs)/_layout.js", "app/_layout.js", "app/+not-found.js"  ]
+    "expo-env.d.ts",
+    "app/(tabs)/(inicio)/index.js",
+    "app/(tabs)/MyProfile.js",
+    "app/(tabs)/_layout.js",
+    "app/_layout.js",
+    "app/+not-found.js"
+  ]
 }
