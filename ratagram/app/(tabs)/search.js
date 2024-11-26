@@ -16,7 +16,7 @@ import friendProfile from "./(inicio)/friendProfile";
 
 const getUsers = async () => {
   const token = await AsyncStorage.getItem("token");
-  const usersFetch = await fetch("http://192.168.1.25:3001/api/user/all", {
+  const usersFetch = await fetch("http://192.168.1.4:3001/api/user/all", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -53,10 +53,9 @@ const Dropdown = () => {
   const handleInputChange = (text) => {
     setSearchTerm(text);
   };
-
   const handleUserClick = (userId) => {
-    router.push("friendProfile", { userId });
-    console.log("userId: " + userId);
+    router.push(`/friendProfile?friendId=${userId}`);
+    console.log("Navegando al perfil de usuario con ID:", userId);
   };
 
   return (
