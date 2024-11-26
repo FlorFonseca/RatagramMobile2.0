@@ -54,7 +54,7 @@ export default function MyFeed() {
   };
 
   return (
-    
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.feedContainer}>
         {message ? (
           <Text style={styles.message}>{message}</Text>
@@ -81,14 +81,11 @@ export default function MyFeed() {
           <Text style={styles.noPosts}>No hay publicaciones disponibles.</Text>
         )}
 
-        <TouchableOpacity
-          style={styles.floatingButton}
-          onPress={goToUpload}
-        >
+        <TouchableOpacity style={styles.floatingButton} onPress={goToUpload}>
           <MaterialIcons name="add-circle-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
+    </SafeAreaView>
   );
 }
 
