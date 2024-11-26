@@ -48,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: "Mi Perfil",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.circle" color={color} />
+            <IconSymbol size={28} name="account-circle" color={color} />
           ),
         }}
       />
