@@ -7,33 +7,41 @@ import {
   StyleSheet,
   Button,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfilePublicacion from "../../../components/ProfilePublicaciones";
 
 const FriendProfile = () => {
   const { friendId } = useLocalSearchParams();
-console.log("friendId recibido:", friendId);
+  console.log("friendId recibido:", friendId);
 
   const [friendData, setFriendData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [isFriend, setIsFriend] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = await AsyncStorage.getItem("token");
-      const response = await fetch(
-        `http://192.168.1.4:3001/api/user/profile/${friendId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      try {
+        const token = await AsyncStorage.getItem("token");
+        const response = await fetch(
+          `http://192.168.1.4:3001/api/user/profile/${friendId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-      if (response.ok) {
-        const data = await response.json();
-        setFriendData(data.user);
-        setPosts(data.posts || []);
-        setIsFriend(data.isFriend || false);
+        if (response.ok) {
+          const data = await response.json();
+          setFriendData(data.user);
+          setPosts(data.posts || []);
+          setIsFriend(data.isFriend || false);
+        } else {
+          setMessage("Error al cargar el perfil.");
+        }
+      } catch (error) {
+        setMessage("Error de red o del servidor.");
       }
     };
 
@@ -42,51 +50,116 @@ console.log("friendId recibido:", friendId);
 
   if (!friendData) {
     return (
-      <View style={styles.center}>
-        <Text>Cargando perfil...</Text>
-      </View>
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.center}>
+          <Text>{message || "Cargando perfil..."}</Text>
+        </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Image
-          source={{ uri: friendData.profilePicture }}
-          style={styles.profileImage}
-        />
-        <View>
-          <Text style={styles.name}>{friendData.username}</Text>
-          <Text>{friendData.friends?.length || 0} Amigos</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.profileHeader}>
+          <View style={styles.profilePic}>
+            {friendData.profilePicture ? (
+              <Image
+                source={{ uri: friendData.profilePicture }}
+                style={styles.profileImage}
+              />
+            ) : (
+              <Text>Sin imagen</Text>
+            )}
+          </View>
+          <View style={styles.profileInfo}>
+            <Text style={styles.littleUserName}>{friendData.username}</Text>
+            <Text style={styles.description}>
+              {friendData.description || "Sin descripción"}
+            </Text>
+            <View style={styles.profileStats}>
+              <Text>Posts: {posts.length}</Text>
+              <Text>Friends: {friendData.friends?.length || 0}</Text>
+            </View>
+            <Button
+              title={isFriend ? "Eliminar amigo" : "Añadir amigo"}
+              onPress={() => setIsFriend(!isFriend)}
+              color={isFriend ? "#FF6347" : "#1E90FF"}
+            />
+          </View>
+        </View>
+        <View style={styles.profilePosts}>
+          {posts.length > 0 ? (
+            <FlatList
+              data={posts}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                <ProfilePublicacion
+                  photo={item.imageUrl}
+                  description={item.caption}
+                  likes={item.likes.length}
+                  comments={item.comments.length}
+                />
+              )}
+            />
+          ) : (
+            <Text>No hay publicaciones</Text>
+          )}
         </View>
       </View>
-      <Button
-        title={isFriend ? "Eliminar amigo" : "Añadir amigo"}
-        onPress={() => setIsFriend(!isFriend)}
-        color={isFriend ? "#FF6347" : "#1E90FF"}
-      />
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <ProfilePublicacion
-            photo={item.imageUrl}
-            description={item.caption}
-            likes={item.likes.length}
-            comments={item.comments.length}
-          />
-        )}
-      />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  container: { flex: 1, backgroundColor: "#fff", padding: 20 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  header: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
-  profileImage: { width: 80, height: 80, borderRadius: 40, marginRight: 16 },
-  name: { fontSize: 20, fontWeight: "bold" },
+  profileHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    marginBottom: 20,
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 50,
+  },
+  profileInfo: {
+    flex: 1,
+    flexDirection: "column",
+    marginLeft: 20,
+  },
+  littleUserName: {
+    margin: 2,
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  description: {
+    fontSize: 14,
+    color: "#666",
+    marginVertical: 10,
+  },
+  profileStats: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+  profilePosts: {
+    marginTop: 10,
+  },
 });
 
 export default FriendProfile;

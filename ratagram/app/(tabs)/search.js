@@ -5,25 +5,16 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Tabs } from "expo-router";
 import { useRouter } from "expo-router";
-import friendProfile from "./(inicio)/friendProfile";
+import { useToken } from "@/context/TokenContext";
 
-const getUsers = async () => {
-  const token = await AsyncStorage.getItem("token");
-  const usersFetch = await fetch("http://192.168.1.4:3001/api/user/all", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+const getUsers = async (token) => {
+  const response = await fetch("http://192.168.1.4:3001/api/user/all", {
+    headers: { Authorization: `Bearer ${token}` },
   });
-  const users = await usersFetch.json();
-  console.log(users);
-  console.log("token (este token wachiin): " + token);
+  const users = await response.json();
   return users;
 };
 
@@ -31,16 +22,19 @@ const Dropdown = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-  //const navigation = useNavigation();
   const router = useRouter();
+  const { token, userData } = useToken(); // Obtenemos el token y los datos del usuario actual desde el contexto
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const users = await getUsers();
-      setUsers(users);
+      if (token) {
+        const users = await getUsers(token);
+        setUsers(users);
+      }
     };
+
     fetchUsers();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     setFilteredUsers(
@@ -53,9 +47,23 @@ const Dropdown = () => {
   const handleInputChange = (text) => {
     setSearchTerm(text);
   };
+
   const handleUserClick = (userId) => {
-    router.push(`/friendProfile?friendId=${userId}`);
-    console.log("Navegando al perfil de usuario con ID:", userId);
+    console.log("ID actual del usuario:", userData?._id);
+    console.log("ID del usuario clicado:", userId);
+
+    if (userId === userData?._id) {
+      // Si el ID del usuario coincide con el actual, navega a MyProfile
+      console.log("Redirigiendo a MyProfile...");
+      router.push("/(tabs)/MyProfile");
+    } else {
+      // De lo contrario, navega a FriendProfile
+      console.log("Redirigiendo a FriendProfile...");
+      router.push({
+        pathname: "/(tabs)/(inicio)/friendProfile",
+        params: { friendId: userId },
+      });
+    }
   };
 
   return (
