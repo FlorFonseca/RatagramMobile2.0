@@ -1,25 +1,18 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  StyleSheet,
-  Button,
-} from "react-native";
+import { View, Text, Image, FlatList, StyleSheet, Button, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import ProfilePublicacion from "../../../components/ProfilePublicaciones";
+import ProfilePublicacion from "./ProfilePublicacion";
 
 const FriendProfile = () => {
   const { friendId } = useLocalSearchParams();
-  console.log("friendId recibido:", friendId);
-
   const [friendData, setFriendData] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [friends, setFriends] = useState([]);
   const [isFriend, setIsFriend] = useState(false);
   const [message, setMessage] = useState("");
+  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -28,7 +21,9 @@ const FriendProfile = () => {
         const response = await fetch(
           `http://192.168.1.4:3001/api/user/profile/${friendId}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 
@@ -36,17 +31,26 @@ const FriendProfile = () => {
           const data = await response.json();
           setFriendData(data.user);
           setPosts(data.posts || []);
+          setFriends(data.user.friends || []);
           setIsFriend(data.isFriend || false);
         } else {
           setMessage("Error al cargar el perfil.");
         }
       } catch (error) {
-        setMessage("Error de red o del servidor.");
+        setMessage("Error en el servidor.");
       }
     };
 
-    if (friendId) fetchProfile();
+    fetchProfile();
   }, [friendId]);
+
+  const handlePostClick = async (post) => {
+    setSelectedPost(post);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedPost(null);
+  };
 
   if (!friendData) {
     return (
@@ -61,6 +65,7 @@ const FriendProfile = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+        {/* Información del perfil */}
         <View style={styles.profileHeader}>
           <View style={styles.profilePic}>
             {friendData.profilePicture ? (
@@ -69,17 +74,17 @@ const FriendProfile = () => {
                 style={styles.profileImage}
               />
             ) : (
-              <Text>Sin imagen</Text>
+              <Text>No Image</Text>
             )}
           </View>
           <View style={styles.profileInfo}>
-            <Text style={styles.littleUserName}>{friendData.username}</Text>
+            <Text style={styles.username}>{friendData.username}</Text>
             <Text style={styles.description}>
               {friendData.description || "Sin descripción"}
             </Text>
             <View style={styles.profileStats}>
               <Text>Posts: {posts.length}</Text>
-              <Text>Friends: {friendData.friends?.length || 0}</Text>
+              <Text>Friends: {friends.length}</Text>
             </View>
             <Button
               title={isFriend ? "Eliminar amigo" : "Añadir amigo"}
@@ -88,24 +93,38 @@ const FriendProfile = () => {
             />
           </View>
         </View>
-        <View style={styles.profilePosts}>
-          {posts.length > 0 ? (
-            <FlatList
-              data={posts}
-              keyExtractor={(item) => item._id}
-              renderItem={({ item }) => (
-                <ProfilePublicacion
-                  photo={item.imageUrl}
-                  description={item.caption}
-                  likes={item.likes.length}
-                  comments={item.comments.length}
-                />
-              )}
+
+        {/* Lista de publicaciones */}
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <ProfilePublicacion
+              photo={item.imageUrl}
+              description={item.caption}
+              likes={item.likes.length}
+              comments={item.comments.length}
+              onPress={() => handlePostClick(item)}
             />
-          ) : (
-            <Text>No hay publicaciones</Text>
           )}
-        </View>
+          ListEmptyComponent={<Text style={styles.empty}>No hay publicaciones</Text>}
+        />
+
+        {/* Modal para publicación seleccionada */}
+        {selectedPost && (
+          <Modal visible={true} onRequestClose={handleCloseModal}>
+            <View style={styles.modalContent}>
+              <Image
+                source={{ uri: selectedPost.imageUrl }}
+                style={styles.modalImage}
+              />
+              <Text style={styles.modalTitle}>{selectedPost.caption}</Text>
+              <Text>Likes: {selectedPost.likes.length}</Text>
+              <Text>Comments: {selectedPost.comments.length}</Text>
+              <Button title="Cerrar" onPress={handleCloseModal} />
+            </View>
+          </Modal>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -116,12 +135,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  container: { flex: 1, backgroundColor: "#fff", padding: 20 },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  center: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   profileHeader: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    flexWrap: "wrap",
+    alignItems: "center",
     marginBottom: 20,
   },
   profilePic: {
@@ -139,26 +164,43 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     flex: 1,
-    flexDirection: "column",
     marginLeft: 20,
   },
-  littleUserName: {
-    margin: 2,
-    fontWeight: "bold",
+  username: {
     fontSize: 18,
+    fontWeight: "bold",
   },
   description: {
     fontSize: 14,
     color: "#666",
-    marginVertical: 10,
+    marginVertical: 5,
   },
   profileStats: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 10,
   },
-  profilePosts: {
-    marginTop: 10,
+  empty: {
+    textAlign: "center",
+    color: "#777",
+    marginTop: 20,
+  },
+  modalContent: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#fff",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginVertical: 10,
+  },
+  modalImage: {
+    width: "100%",
+    height: 200,
+    marginBottom: 20,
   },
 });
 
