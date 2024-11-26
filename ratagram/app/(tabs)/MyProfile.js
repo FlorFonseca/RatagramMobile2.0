@@ -10,9 +10,9 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyProfile() {
   const { token, userData } = useToken();
@@ -107,99 +107,104 @@ export default function MyProfile() {
   };
 
   return (
-    <ScrollView style={styles.profileContainer}>
-      <View style={styles.profileHeader}>
-        <View style={styles.profilePic}>
-          {isEditing ? (
-            <TextInput
-              style={styles.input}
-              value={newProfilePicture}
-              onChangeText={setNewProfilePicture}
-              placeholder="URL de la nueva imagen"
-            />
-          ) : userInfo?.profilePicture ? (
-            <Image
-              source={{ uri: userInfo.profilePicture }}
-              style={styles.profileImage}
-            />
-          ) : (
-            <Text>No Image</Text>
-          )}
-        </View>
-        <View style={styles.profileInfo}>
-          <Text style={styles.littleUserName}>
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+      <ScrollView style={styles.profileContainer}>
+        <View style={styles.profileHeader}>
+          <View style={styles.profilePic}>
             {isEditing ? (
               <TextInput
                 style={styles.input}
-                value={newUsername}
-                onChangeText={setNewUsername}
+                value={newProfilePicture}
+                onChangeText={setNewProfilePicture}
+                placeholder="URL de la nueva imagen"
+              />
+            ) : userInfo?.profilePicture ? (
+              <Image
+                source={{ uri: userInfo.profilePicture }}
+                style={styles.profileImage}
               />
             ) : (
-              userInfo?.username
+              <Text>No Image</Text>
             )}
-          </Text>
-          <Text style={styles.description}>
-            {isEditing ? (
-              <TextInput
-                style={styles.input}
-                value={newDescription}
-                onChangeText={setNewDescription}
-                placeholder="Descripción"
-              />
-            ) : (
-              userInfo?.description
-            )}
-          </Text>
-          <View style={styles.profileStats}>
-            <Text>Posts: {postsStatistics}</Text>
-            <Text>Friends: {friendsStatistics}</Text>
           </View>
-          <View style={styles.profileEditBtn}>
-            {isEditing ? (
-              <View style={styles.editButtonsContainer}>
+          <View style={styles.profileInfo}>
+            <Text style={styles.littleUserName}>
+              {isEditing ? (
+                <TextInput
+                  style={styles.input}
+                  value={newUsername}
+                  onChangeText={setNewUsername}
+                />
+              ) : (
+                userInfo?.username
+              )}
+            </Text>
+            <Text style={styles.description}>
+              {isEditing ? (
+                <TextInput
+                  style={styles.input}
+                  value={newDescription}
+                  onChangeText={setNewDescription}
+                  placeholder="Descripción"
+                />
+              ) : (
+                userInfo?.description
+              )}
+            </Text>
+            <View style={styles.profileStats}>
+              <Text>Posts: {postsStatistics}</Text>
+              <Text>Friends: {friendsStatistics}</Text>
+            </View>
+            <View style={styles.profileEditBtn}>
+              {isEditing ? (
+                <View style={styles.editButtonsContainer}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleEditProfile}
+                  >
+                    <Text style={styles.buttonText}>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.button, styles.buttonCancel]}
+                    onPress={handleEditClick}
+                  >
+                    <Text style={styles.buttonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={handleEditProfile}
-                >
-                  <Text style={styles.buttonText}>Save</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, styles.buttonCancel]}
                   onPress={handleEditClick}
                 >
-                  <Text style={styles.buttonText}>Cancel</Text>
+                  <Text style={styles.buttonText}>Editar perfil</Text>
                 </TouchableOpacity>
-              </View>
-            ) : (
-              <TouchableOpacity style={styles.button} onPress={handleEditClick}>
-                <Text style={styles.buttonText}>Editar perfil</Text>
-              </TouchableOpacity>
-            )}
+              )}
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.profilePosts}>
-        {posts.length > 0 ? (
-          posts.map((post) => (
-            <TouchableOpacity
-              key={post._id}
-              onPress={() => handleOpenModal(post)}
-            >
-              <View style={styles.userPublicacion}>
-                <Text>{post.title}</Text>
-              </View>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text>No hay publicaciones</Text>
+        <View style={styles.profilePosts}>
+          {posts.length > 0 ? (
+            posts.map((post) => (
+              <TouchableOpacity
+                key={post._id}
+                onPress={() => handleOpenModal(post)}
+              >
+                <View style={styles.userPublicacion}>
+                  <Text>{post.title}</Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text>No hay publicaciones</Text>
+          )}
+        </View>
+        {selectedPost && (
+          <Modal visible={true} onRequestClose={handleCloseModal}>
+            <Publicacion post={selectedPost} />
+          </Modal>
         )}
-      </View>
-      {selectedPost && (
-        <Modal visible={true} onRequestClose={handleCloseModal}>
-          <Publicacion post={selectedPost} />
-        </Modal>
-      )}
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

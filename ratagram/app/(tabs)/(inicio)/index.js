@@ -5,7 +5,6 @@ import {
   FlatList,
   StyleSheet,
   Alert,
-  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -13,6 +12,7 @@ import Publicacion from "@/components/Publicacion";
 import { router } from "expo-router";
 import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyFeed() {
   const [posts, setPosts] = useState([]);
@@ -54,7 +54,7 @@ export default function MyFeed() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView edges={["bottom"]} style={{flex:1}}>
       <View style={styles.feedContainer}>
         {message ? (
           <Text style={styles.message}>{message}</Text>
@@ -91,9 +91,10 @@ export default function MyFeed() {
 
 const styles = StyleSheet.create({
   feedContainer: {
-    flex: 1,
     backgroundColor: "#fff",
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+
   },
   message: {
     color: "red",

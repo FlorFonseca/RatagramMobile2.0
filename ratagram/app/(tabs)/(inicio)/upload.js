@@ -6,6 +6,7 @@ import {useToken} from '@/context/TokenContext';
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "react-native-elements";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function upload() {
   const [imageUri, setImageUri] = useState(null);
@@ -86,25 +87,27 @@ export default function upload() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <TouchableOpacity onPress={pickImage} style={styles.button}>
-        <ThemedText style={styles.buttonText}>Seleccionar imagen</ThemedText>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={takePhoto} style={styles.button}>
-        <ThemedText style={styles.buttonText}>Toma una foto</ThemedText>
-      </TouchableOpacity>
-      {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
-      <TextInput
-        placeholder="Escribe una descripción"
-        placeholderTextColor={theme.colors.primary}
-        value={caption}
-        onChangeText={setCaption}
-        style={[styles.input,{color: theme.colors.primary}]}
-      />
-      <TouchableOpacity onPress={handleUploadPost} style={styles.button}>
-        <ThemedText style={styles.buttonText}>Publicar</ThemedText>
-      </TouchableOpacity>
-    </ThemedView>
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+      <ThemedView style={styles.container}>
+        <TouchableOpacity onPress={pickImage} style={styles.button}>
+          <ThemedText style={styles.buttonText}>Seleccionar imagen</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={takePhoto} style={styles.button}>
+          <ThemedText style={styles.buttonText}>Toma una foto</ThemedText>
+        </TouchableOpacity>
+        {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+        <TextInput
+          placeholder="Escribe una descripción"
+          placeholderTextColor={theme.colors.primary}
+          value={caption}
+          onChangeText={setCaption}
+          style={[styles.input, { color: theme.colors.primary }]}
+        />
+        <TouchableOpacity onPress={handleUploadPost} style={styles.button}>
+          <ThemedText style={styles.buttonText}>Publicar</ThemedText>
+        </TouchableOpacity>
+      </ThemedView>
+    </SafeAreaView>
   );
 }
 
