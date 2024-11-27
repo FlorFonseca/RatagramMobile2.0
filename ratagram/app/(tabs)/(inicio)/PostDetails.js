@@ -21,7 +21,8 @@ const PostDetails = () => {
         {/* Información del post */}
         <Text style={styles.caption}>{post.caption}</Text>
         <Text style={styles.details}>
-          Likes: {post.likes.length} | Comentarios: {post.comments.length}
+          Likes: {post.likes ? post.likes.length : 0} | Comentarios:{" "}
+          {post.comments ? post.comments.length : 0}
         </Text>
 
         {/* Lista de comentarios */}
