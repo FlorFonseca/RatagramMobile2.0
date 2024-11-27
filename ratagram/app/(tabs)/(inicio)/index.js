@@ -21,11 +21,14 @@ export default function MyFeed() {
 
   const handleFeed = async () => {
     try {
-      const response = await fetch("http://192.168.1.25:3001/api/posts/feed", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "http://192.168.124.64:3001/api/posts/feed",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await response.json();
 

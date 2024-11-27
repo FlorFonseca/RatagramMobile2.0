@@ -14,7 +14,7 @@ const PostDetails = () => {
       <View style={styles.container}>
         {/* Imagen del post */}
         <Image
-          source={{ uri: `http://192.168.1.25:3001/${post.imageUrl}` }}
+          source={{ uri: `http://192.168.124.64:3001/${post.imageUrl}` }}
           style={styles.postImage}
         />
 
