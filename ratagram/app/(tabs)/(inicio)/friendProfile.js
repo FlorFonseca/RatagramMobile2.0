@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, FlatList, StyleSheet, Button, Modal, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams } from "expo-router";
+import { useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfilePublicacion from '@/components/ProfilePublicacion';
 import { useNavigation} from "@react-navigation/native";
 import { useToken } from "@/context/TokenContext";
 
 const FriendProfile = () => {
-  const { friendId } = useLocalSearchParams();
+  const route = useRoute();
+  const { friendId } = route.params;
   const {token} = useToken();
   const [friendData, setFriendData] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -16,7 +17,6 @@ const FriendProfile = () => {
   const [isFriend, setIsFriend] = useState(false);
   const [message, setMessage] = useState("");
   const navigation = useNavigation();
-
 
 
   useEffect(() => {

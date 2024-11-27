@@ -13,6 +13,9 @@ import {
 import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ProfilePublicacion from "@/components/ProfilePublicacion";
+import { useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
 
 export default function MyProfile() {
   const { token, userData } = useToken();
@@ -27,6 +30,7 @@ export default function MyProfile() {
   const [newProfilePicture, setNewProfilePicture] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [message, setMessage] = useState("");
+  const navigation = useNavigation();
 
   console.log(userData);
   console.log(AsyncStorage.getItem("token"));
@@ -104,6 +108,13 @@ export default function MyProfile() {
     } catch (error) {
       setMessage("Error en el servidor");
     }
+  };
+
+  const handlePostClick = async (post) => {
+    router.push({
+      pathname: "/(tabs)/(inicio)/PostDetails",
+      params: { post: JSON.stringify(post)},
+    });
   };
 
   return (
@@ -185,28 +196,24 @@ export default function MyProfile() {
         <View style={styles.profilePosts}>
           {posts.length > 0 ? (
             posts.map((post) => (
-              <TouchableOpacity
+              <ProfilePublicacion
                 key={post._id}
-                onPress={() => handleOpenModal(post)}
-              >
-                <View style={styles.userPublicacion}>
-                  <Text>{post.title}</Text>
-                </View>
-              </TouchableOpacity>
+                photo={post.imageUrl}
+                description={post.caption}
+                likes={post.likes.length}
+                comments={post.comments.length}
+                onPress={() => handlePostClick(post)}
+              ></ProfilePublicacion>
             ))
           ) : (
             <Text>No hay publicaciones</Text>
           )}
         </View>
-        {selectedPost && (
-          <Modal visible={true} onRequestClose={handleCloseModal}>
-            <Publicacion post={selectedPost} />
-          </Modal>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   profileContainer: {
@@ -276,8 +283,6 @@ const styles = StyleSheet.create({
   },
   profilePosts: {
     marginTop: 10,
-    flexDirection: "row",
-    flexWrap: "wrap",
     gap: 5,
   },
   userPublicacion: {

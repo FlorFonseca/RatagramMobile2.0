@@ -142,7 +142,10 @@ const Publicacion = ({
     if (userData && userId === userData._id) {
       router.push(`/(tabs)/MyProfile`);
     } else {
-      router.push(`/(tabs)/(inicio)/friendProfile/${userId}`);
+      router.push({
+        pathname: "/(tabs)/(inicio)/friendProfile",
+        params: { friendId: userId },
+      });
     }
   };
 
