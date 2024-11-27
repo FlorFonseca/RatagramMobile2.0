@@ -1,11 +1,17 @@
 import React from "react";
 import { TouchableOpacity, Image, StyleSheet, View, Text } from "react-native";
 
-const ProfilePublicacion = ({ photo, description, likes, comments, onPress }) => {
+const ProfilePublicacion = ({
+  photo,
+  description,
+  likes,
+  comments,
+  onPress,
+}) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image
-        source={{ uri: `http://192.168.1.25:3001/${photo}` }}
+        source={{ uri: `http://192.168.124.64:3001/${photo}` }}
         style={styles.image}
       />
       <View style={styles.infoContainer}>
@@ -49,4 +55,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProfilePublicacion;
-

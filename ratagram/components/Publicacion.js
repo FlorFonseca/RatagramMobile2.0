@@ -19,7 +19,7 @@ const fetchCommentsDetails = async (commentIds, token) => {
     (commentIds || []).map(async (commentId) => {
       if (!commentId) return null;
       const response = await fetch(
-        `http://192.168.1.25:3001/api/posts/comments/${commentId}`,
+        `http://192.168.124.64:3001/api/posts/comments/${commentId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -235,7 +235,7 @@ const Publicacion = ({
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex:1,
+    flex: 1,
   },
   container: {
     padding: 10,
@@ -250,19 +250,19 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginVertical: 10,
   },
-  username: { 
-    fontWeight: "bold", 
-    fontSize: 16 
+  username: {
+    fontWeight: "bold",
+    fontSize: 16,
   },
-  photo: { 
-    width: "100%", 
-    height: 270, 
+  photo: {
+    width: "100%",
+    height: 270,
     marginVertical: 10,
     alignSelf: "center",
   },
-  
-  description: { 
-    fontSize: 14 
+
+  description: {
+    fontSize: 14,
   },
   commentInput: {
     borderColor: "#ccc",

@@ -13,9 +13,10 @@ import {
 import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Redirect } from "expo-router"; // Importa el componente Redirect
 
 export default function MyProfile() {
-  const { token, userData } = useToken();
+  const { token, userData, setToken } = useToken();
   const [userInfo, setUserInfo] = useState(null);
   const [posts, setPosts] = useState([]);
   const [friends, setFriends] = useState([]);
@@ -27,9 +28,7 @@ export default function MyProfile() {
   const [newProfilePicture, setNewProfilePicture] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [message, setMessage] = useState("");
-
-  console.log(userData);
-  console.log(AsyncStorage.getItem("token"));
+  const [redirect, setRedirect] = useState(false); // Estado para redirigir
 
   useEffect(() => {
     const handleProfile = async () => {
@@ -106,8 +105,32 @@ export default function MyProfile() {
     }
   };
 
+  // Función de logout con redirección a /unAuth
+  const handleLogout = () => {
+    console.log("borrando el token" + token);
+    //setToken(null);
+    AsyncStorage.removeItem("token")
+      .then(() => {
+        //setToken(null);
+        console.log("token borrado: " + token);
+        setRedirect(true); // Establece el estado para redirigir
+      })
+      .catch((error) => {
+        console.error("Error al borrar el token:", error);
+      });
+  };
+
+  if (redirect) {
+    return <Redirect href="/unAuth" />; // Redirige a /unAuth
+  }
+
   return (
     <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+      <View style={styles.logoutContainer}>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView style={styles.profileContainer}>
         <View style={styles.profileHeader}>
           <View style={styles.profilePic}>
@@ -209,15 +232,32 @@ export default function MyProfile() {
 }
 
 const styles = StyleSheet.create({
+  logoutContainer: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 1,
+  },
+  logoutButton: {
+    backgroundColor: "#d9534f",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  logoutText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
   profileContainer: {
     flex: 1,
     backgroundColor: "#fff",
     padding: 20,
   },
   editButtonsContainer: {
-    flexDirection: "row", // Organiza los botones en una columna
-    alignItems: "center", // Centra los botones horizontalmente
-    gap: 10, // Espaciado entre los botones (solo si tu versión de React Native soporta `gap`)
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
   profileHeader: {
     flexDirection: "row",
@@ -263,14 +303,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: "#007bff", // Color del botón
-    paddingVertical: 10, // Altura del botón
-    paddingHorizontal: 20, // Ancho del botón
-    borderRadius: 5, // Bordes redondeados
-    marginVertical: 5, // Espaciado entre los botones si `gap` no está disponible
+    backgroundColor: "#007bff",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginVertical: 5,
   },
   buttonText: {
-    color: "#fff", // Color del texto
+    color: "#fff",
     fontSize: 16,
     textAlign: "center",
   },
