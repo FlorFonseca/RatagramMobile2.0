@@ -14,6 +14,7 @@ import { router } from "expo-router";
 import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+//Se obtienen los comentarios en base a sus IDs
 const fetchCommentsDetails = async (commentIds, token) => {
   return await Promise.all(
     (commentIds || []).map(async (commentId) => {
@@ -29,6 +30,7 @@ const fetchCommentsDetails = async (commentIds, token) => {
       if (response.ok) {
         return await response.json();
       }
+      //Devuelve en caso de error:
       return {
         _id: commentId,
         user: { username: "Usuario desconocido" },
@@ -38,6 +40,7 @@ const fetchCommentsDetails = async (commentIds, token) => {
   );
 };
 
+//Se añaden un like a una publicacion
 const handleAddLikes = async (id) => {
   try {
     const response = await fetch(
@@ -57,6 +60,7 @@ const handleAddLikes = async (id) => {
   }
 };
 
+//Se quita un like a una publicación
 const handleDeleteLike = async (id) => {
   try {
     const response = await fetch(
@@ -79,6 +83,7 @@ const handleDeleteLike = async (id) => {
   }
 };
 
+//Componente principal para mostrar una publicación
 const Publicacion = ({
   id,
   username,
@@ -93,12 +98,14 @@ const Publicacion = ({
   const { token, userData } = useToken();
   const [likes, setLikes] = useState(Likes.length || 0);
   const [isAlreadyLiked, setIsAlreadyLiked] = useState(
+    //Estado para verificar si un usuario ya le dió like a una foto
     Likes.some((like) => like === userData._id)
   );
   const [commentInput, setCommentInput] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
 
+  //Carga los comentarios de la publicación al montar el componente
   useEffect(() => {
     const loadComments = async () => {
       if (Comments && Comments.length > 0) {
@@ -113,6 +120,7 @@ const Publicacion = ({
     loadComments();
   }, [Comments, token]);
 
+  //Manejador del evento de dar o quitar un click
   const handleLikeClick = async () => {
     if (isAlreadyLiked) {
       const dataPost = await handleDeleteLike(id);
@@ -129,6 +137,7 @@ const Publicacion = ({
     }
   };
 
+  //Redirige al perfil del usuario asociado a la publicación
   const profileRedirect = () => {
     if (userData && userId === userData._id) {
       router.push(`/(tabs)/MyProfile`);
@@ -137,6 +146,7 @@ const Publicacion = ({
     }
   };
 
+  //Se envía un nuevo comentario
   const handleCommentSubmit = async () => {
     if (commentInput.trim() === "") return;
 
@@ -235,7 +245,7 @@ const Publicacion = ({
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex:1,
+    flex: 1,
   },
   container: {
     padding: 10,
@@ -250,19 +260,19 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginVertical: 10,
   },
-  username: { 
-    fontWeight: "bold", 
-    fontSize: 16 
+  username: {
+    fontWeight: "bold",
+    fontSize: 16,
   },
-  photo: { 
-    width: "100%", 
-    height: 270, 
+  photo: {
+    width: "100%",
+    height: 270,
     marginVertical: 10,
     alignSelf: "center",
   },
-  
-  description: { 
-    fontSize: 14 
+
+  description: {
+    fontSize: 14,
   },
   commentInput: {
     borderColor: "#ccc",
