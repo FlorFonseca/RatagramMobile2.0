@@ -12,7 +12,7 @@ const BottomTabLogout = () => {
     console.log("borrando el token" + token);
     AsyncStorage.removeItem("token")
       .then(() => {
-        setToken(null); // Limpia el token en el contexto
+        //setToken(null); // Limpia el token en el contexto
         console.log("token borrado: " + token);
         setRedirect(true); // Cambia el estado para redirigir
       })
