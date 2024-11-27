@@ -82,7 +82,7 @@ export default function MyProfile() {
   const handleEditProfile = async () => {
     try {
       const response = await fetch(
-        `http://192.168.1.25:3001/api/user/profile/edit`,
+        `http://192.168.124.64:3001/api/user/profile/edit`,
         {
           method: "PUT",
           body: JSON.stringify({

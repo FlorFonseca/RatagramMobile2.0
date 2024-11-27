@@ -20,7 +20,7 @@ const fetchCommentsDetails = async (commentIds, token) => {
     (commentIds || []).map(async (commentId) => {
       if (!commentId) return null;
       const response = await fetch(
-        `http://192.168.1.25:3001/api/posts/comments/${commentId}`,
+        `http://192.168.124.64:3001/api/posts/comments/${commentId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ const fetchCommentsDetails = async (commentIds, token) => {
 const handleAddLikes = async (id) => {
   try {
     const response = await fetch(
-      `http://192.168.1.25:3001/api/posts/${id}/like`,
+      `http://192.168.124.64:3001/api/posts/${id}/like`,
       {
         method: "POST",
         headers: {

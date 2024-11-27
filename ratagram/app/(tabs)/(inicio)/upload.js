@@ -58,7 +58,7 @@ export default function upload() {
 
     try {
       const response = await fetch(
-        "http://192.168.1.25:3001/api/posts/upload",
+        "http://192.168.124.64:3001/api/posts/upload",
         {
           method: "POST",
           headers: {

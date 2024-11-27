@@ -24,7 +24,7 @@ export default function Register() {
   const handleSignUp = async () => {
     try {
       const response = await fetch(
-        "http://192.168.1.25:3001/api/auth/register",
+        "http://192.168.124.64:3001/api/auth/register",
 
         {
           method: "POST",

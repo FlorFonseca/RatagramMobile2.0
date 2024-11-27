@@ -23,7 +23,7 @@ const FriendProfile = () => {
     const fetchProfile = async () => {
       try {
         const response = await fetch(
-          `http://192.168.1.25:3001/api/user/profile/${friendId}`,
+          `http://192.168.124.64:3001/api/user/profile/${friendId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
