@@ -10,7 +10,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const {userData} = useToken();
+  const { userData } = useToken();
 
   return (
     <Tabs
@@ -52,6 +52,16 @@ export default function TabLayout() {
         name="MyProfile"
         options={{
           title: userData?.username || "Mi Perfil", //Así el encabezado de dMyProfile depende del nombre del usuario
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="account-circle" color={color} />
+          ),
+          headerShown: true,
+        }}
+      />
+      <Tabs.Screen
+        name="logout"
+        options={{
+          title: userData?.username || "logout", //Así el encabezado de dMyProfile depende del nombre del usuario
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="account-circle" color={color} />
           ),
