@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -13,7 +13,7 @@ import { router } from "expo-router";
 import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function MyFeed() {
   const [posts, setPosts] = useState([]);
@@ -53,12 +53,18 @@ export default function MyFeed() {
     handleFeed();
   }, [posts]);
 
+  useFocusEffect(
+    useCallback(() => {
+      handleFeed();
+    }, []) // Dependencias vacías para que solo se ejecute al ganar foco
+  );
+
   const goToUpload = () => {
     router.push(`/(tabs)/(inicio)/upload`);
   };
 
   return (
-    <SafeAreaView edges={["bottom"]} style={{flex:1}}>
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
       <View style={styles.feedContainer}>
         {message ? (
           <Text style={styles.message}>{message}</Text>
@@ -98,7 +104,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingLeft: 10,
     paddingRight: 10,
-
   },
   message: {
     color: "red",
