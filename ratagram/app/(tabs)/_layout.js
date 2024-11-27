@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-
+import { useToken } from "@/context/TokenContext";
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
@@ -10,6 +10,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const {userData} = useToken();
 
   return (
     <Tabs
@@ -30,7 +31,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(inicio)"
         options={{
-          headerShown: false,
+          title: "Feed",
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={28} name="home-filled" color={color} />
+          ),
         }}
       />
 
@@ -39,17 +43,19 @@ export default function TabLayout() {
         options={{
           title: "Buscar",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <IconSymbol size={28} name="person-search" color={color} />
           ),
+          headerShown: true,
         }}
       />
       <Tabs.Screen
         name="MyProfile"
         options={{
-          title: "Mi Perfil",
+          title: userData?.username || "Mi Perfil", //Así el encabezado de dMyProfile depende del nombre del usuario
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="account-circle" color={color} />
           ),
+          headerShown: true,
         }}
       />
     </Tabs>

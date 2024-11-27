@@ -10,12 +10,12 @@ import {
   TouchableOpacity,
   Modal,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context"; 
 import { useToken } from "@/context/TokenContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyProfile() {
-  const { token, userData} = useToken();
+  const { token, userData } = useToken();
   const [userInfo, setUserInfo] = useState(null);
   const [posts, setPosts] = useState([]);
   const [friends, setFriends] = useState([]);
@@ -28,8 +28,8 @@ export default function MyProfile() {
   const [newDescription, setNewDescription] = useState("");
   const [message, setMessage] = useState("");
 
-  console.log(userData)
-  console.log(AsyncStorage.getItem('token'))
+  console.log(userData);
+  console.log(AsyncStorage.getItem("token"));
 
   useEffect(() => {
     const handleProfile = async () => {
@@ -107,7 +107,7 @@ export default function MyProfile() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
       <ScrollView style={styles.profileContainer}>
         <View style={styles.profileHeader}>
           <View style={styles.profilePic}>
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginVertical: 5,
     borderRadius: 5,
-    height:"100%",
-    width:"100%",
+    height: "100%",
+    width: "100%",
   },
 });

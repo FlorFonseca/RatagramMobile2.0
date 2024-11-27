@@ -1,3 +1,4 @@
+/*este*/
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -249,9 +250,20 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginVertical: 10,
   },
-  username: { fontWeight: "bold", fontSize: 16 },
-  photo: { width: 250, height: 250, marginVertical: 10 },
-  description: { fontSize: 14 },
+  username: { 
+    fontWeight: "bold", 
+    fontSize: 16 
+  },
+  photo: { 
+    width: "100%", 
+    height: 270, 
+    marginVertical: 10,
+    alignSelf: "center",
+  },
+  
+  description: { 
+    fontSize: 14 
+  },
   commentInput: {
     borderColor: "#ccc",
     borderWidth: 1,
