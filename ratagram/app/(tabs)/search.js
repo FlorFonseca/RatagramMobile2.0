@@ -11,7 +11,7 @@ import { useRouter } from "expo-router";
 import { useToken } from "@/context/TokenContext";
 
 const getUsers = async (token) => {
-  const response = await fetch("http://192.168.1.4:3001/api/user/all", {
+  const response = await fetch("http://192.168.1.25:3001/api/user/all", {
     headers: { Authorization: `Bearer ${token}` },
   });
   const users = await response.json();

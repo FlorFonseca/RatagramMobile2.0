@@ -4,7 +4,10 @@ import { TouchableOpacity, Image, StyleSheet, View, Text } from "react-native";
 const ProfilePublicacion = ({ photo, description, likes, comments, onPress }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={{ uri: photo }} style={styles.image} />
+      <Image
+        source={{ uri: `http://192.168.1.25:3001/${photo}` }}
+        style={styles.image}
+      />
       <View style={styles.infoContainer}>
         <Text style={styles.description}>{description}</Text>
         <View style={styles.stats}>

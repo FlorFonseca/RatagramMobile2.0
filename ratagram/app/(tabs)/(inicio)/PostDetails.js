@@ -39,7 +39,10 @@ const PostDetails = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: post.imageUrl }} style={styles.image} />
+      <Image
+        source={{ uri: `http://192.168.1.25:3001/${post.imageUrl}` }}
+        style={styles.image}
+      />
       <Text style={styles.username}>{username}</Text>
       <Text style={styles.caption}>{post.caption}</Text>
       <Text style={styles.details}>Likes: {post.likes.length}</Text>
