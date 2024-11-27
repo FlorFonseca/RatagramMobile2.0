@@ -1,104 +1,58 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  TextInput,
-  Text,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Redirect } from "expo-router";
 import { useToken } from "@/context/TokenContext";
 
-const getUsers = async (token) => {
-  const response = await fetch("http://192.168.124.64:3001/api/user/all", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  const users = await response.json();
-  return users;
-};
+const BottomTabLogout = () => {
+  const { setToken, token } = useToken(); // Accede al contexto del token
+  const [redirect, setRedirect] = useState(false); // Controla la redirección
 
-const Dropdown = () => {
-  const [users, setUsers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const router = useRouter();
-  const { token, userData } = useToken(); // Obtenemos el token y los datos del usuario actual desde el contexto
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      if (token) {
-        const users = await getUsers(token);
-        setUsers(users);
-      }
-    };
-
-    fetchUsers();
-  }, [token]);
-
-  useEffect(() => {
-    setFilteredUsers(
-      users.filter((user) =>
-        user.username.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-  }, [searchTerm, users]);
-
-  const handleInputChange = (text) => {
-    setSearchTerm(text);
-  };
-
-  const handleUserClick = (userId) => {
-    console.log("ID actual del usuario:", userData?._id);
-    console.log("ID del usuario clicado:", userId);
-
-    if (userId === userData?._id) {
-      // Si el ID del usuario coincide con el actual, navega a MyProfile
-      console.log("Redirigiendo a MyProfile...");
-      router.push("/(tabs)/MyProfile");
-    } else {
-      // De lo contrario, navega a FriendProfile
-      console.log("Redirigiendo a FriendProfile...");
-      router.push({
-        pathname: "/(tabs)/(inicio)/friendProfile",
-        params: { friendId: userId },
+  const handleLogout = () => {
+    console.log("borrando el token" + token);
+    AsyncStorage.removeItem("token")
+      .then(() => {
+        setToken(null); // Limpia el token en el contexto
+        console.log("token borrado: " + token);
+        setRedirect(true); // Cambia el estado para redirigir
+      })
+      .catch((error) => {
+        console.error("Error al borrar el token:", error);
       });
-    }
   };
+
+  if (redirect) {
+    // Redirige al usuario si se activó el estado de redirección
+    return <Redirect href="/unAuth" />;
+  }
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
-        <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>
-          <TextInput
-            style={{
-              height: 40,
-              borderColor: "gray",
-              borderWidth: 1,
-              marginBottom: 10,
-              backgroundColor: "white",
-              color: "black",
-              paddingHorizontal: 8,
-            }}
-            placeholder="Buscar usuario..."
-            value={searchTerm}
-            onChangeText={handleInputChange}
-          />
-          <FlatList
-            data={filteredUsers}
-            keyExtractor={(item) => item._id.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleUserClick(item._id)}>
-                <Text style={{ padding: 10, fontSize: 16 }}>
-                  {item.username}
-                </Text>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.tabButton} onPress={handleLogout}>
+        <Text style={styles.tabText}>Cerrar Sesión</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
-export default Dropdown;
+export default BottomTabLogout;
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+    backgroundColor: "#fff",
+    borderTopWidth: 1,
+    borderTopColor: "#ccc",
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  tabText: {
+    fontSize: 16,
+    color: "#007BFF",
+  },
+});
