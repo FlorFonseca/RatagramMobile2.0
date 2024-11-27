@@ -4,21 +4,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfilePublicacion from '@/components/ProfilePublicacion';
+import { useNavigation} from "@react-navigation/native";
+import { useToken } from "@/context/TokenContext";
 
 const FriendProfile = () => {
   const { friendId } = useLocalSearchParams();
+  const {token} = useToken();
   const [friendData, setFriendData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [friends, setFriends] = useState([]);
   const [isFriend, setIsFriend] = useState(false);
   const [message, setMessage] = useState("");
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [showComments, setShowComments] = useState(false);
+  const navigation = useNavigation();
+
+
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = await AsyncStorage.getItem("token");
         const response = await fetch(
           `http://192.168.1.25:3001/api/user/profile/${friendId}`,
           {
@@ -46,11 +49,7 @@ const FriendProfile = () => {
   }, [friendId]);
 
   const handlePostClick = async (post) => {
-    setSelectedPost(post);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedPost(null);
+    navigation.navigate('PostDetails', {post})
   };
 
   if (!friendData) {
@@ -112,60 +111,6 @@ const FriendProfile = () => {
             <Text style={styles.empty}>No hay publicaciones</Text>
           }
         />
-
-        {/* Modal para publicación seleccionada */}
-        {selectedPost && (
-          <Modal
-            visible={true}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={handleCloseModal}
-          >
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContainer}>
-                <Image
-                  source={{
-                    uri: `http://192.168.1.25:3001/${selectedPost.imageUrl}`,
-                  }}
-                  style={styles.modalImage}
-                />
-                <Text style={styles.modalTitle}>{selectedPost.caption}</Text>
-                <Text style={styles.modalDetails}>
-                  ❤️ Likes: {selectedPost.likes.length}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => setShowComments(!showComments)}
-                >
-                  <Text style={styles.commentsToggle}>
-                    💬 Comments: {selectedPost.comments.length}
-                    {showComments ? "Ver menos" : "Ver más"}
-                  </Text>
-                </TouchableOpacity>
-                {showComments && (
-                  <FlatList
-                    data={selectedPost.comments}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                      <View style={styles.comment}>
-                        <Text>
-                          @{item.user?.username || "Usuario desconocido"}:{" "}
-                          {item.content || "Sin contenido"}
-                        </Text>
-                      </View>
-                    )}
-                  />
-                )}
-                <View style={styles.modalButtonContainer}>
-                  <Button
-                    title="Cerrar"
-                    onPress={handleCloseModal}
-                    color="#ff6347"
-                  />
-                </View>
-              </View>
-            </View>
-          </Modal>
-        )}
       </View>
     </SafeAreaView>
   );

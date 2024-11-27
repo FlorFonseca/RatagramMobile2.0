@@ -1,63 +1,96 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLocalSearchParams } from "expo-router";
+import { View, Text, Image, StyleSheet, FlatList } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const PostDetails = () => {
-  const { postId, username } = useLocalSearchParams();
-  const [post, setPost] = useState(null);
+  const route = useRoute();
+  const { post } = route.params;
+ 
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const storedPost = await AsyncStorage.getItem("selectedPost");
-        if (storedPost) {
-          const parsedPost = JSON.parse(storedPost);
-          if (parsedPost._id === postId) {
-            setPost(parsedPost);
-          } else {
-            console.error("La publicación no coincide con el ID.");
-          }
-        } else {
-          console.error("No se encontró la publicación almacenada.");
-        }
-      } catch (error) {
-        console.error("Error al recuperar la publicación:", error);
-      }
-    };
-
-    fetchPost();
-  }, [postId]);
-
-  if (!post) {
-    return (
-      <View style={styles.center}>
-        <Text>No se encontró la publicación.</Text>
-      </View>
-    );
-  }
-
+  console.log("post",post);
   return (
-    <View style={styles.container}>
-      <Image
-        source={{ uri: `http://192.168.1.25:3001/${post.imageUrl}` }}
-        style={styles.image}
-      />
-      <Text style={styles.username}>{username}</Text>
-      <Text style={styles.caption}>{post.caption}</Text>
-      <Text style={styles.details}>Likes: {post.likes.length}</Text>
-      <Text style={styles.details}>Comments: {post.comments.length}</Text>
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Imagen del post */}
+        <Image
+          source={{ uri: `http://192.168.1.25:3001/${post.imageUrl}` }}
+          style={styles.postImage}
+        />
+
+        {/* Información del post */}
+        <Text style={styles.caption}>{post.caption}</Text>
+        <Text style={styles.details}>
+          Likes: {post.likes.length} | Comentarios: {post.comments.length}
+        </Text>
+
+        {/* Lista de comentarios */}
+        <Text style={styles.commentsTitle}>Comentarios:</Text>
+        <FlatList
+          data={post.comments}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <View style={styles.comment}>
+              <Text style={styles.commentUsername}>{item.username}:</Text>
+              <Text style={styles.commentText}>{item.text}</Text>
+            </View>
+          )}
+          ListEmptyComponent={
+            <Text style={styles.noComments}>No hay comentarios</Text>
+          }
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
-  center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  image: { width: "100%", height: 200, marginBottom: 16 },
-  username: { fontSize: 16, fontWeight: "bold", marginBottom: 8 },
-  caption: { fontSize: 14, marginBottom: 8 },
-  details: { fontSize: 12, color: "#555" },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  postImage: {
+    width: "100%",
+    height: 300,
+    borderRadius: 10,
+    marginBottom: 16,
+  },
+  caption: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  details: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 16,
+  },
+  commentsTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  comment: {
+    flexDirection: "row",
+    marginBottom: 8,
+  },
+  commentUsername: {
+    fontWeight: "bold",
+    marginRight: 4,
+  },
+  commentText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  noComments: {
+    textAlign: "center",
+    color: "#777",
+    marginTop: 20,
+  },
 });
 
 export default PostDetails;
