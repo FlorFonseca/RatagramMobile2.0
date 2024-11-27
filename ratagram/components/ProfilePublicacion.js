@@ -1,7 +1,14 @@
 import React from "react";
 import { TouchableOpacity, Image, StyleSheet, View, Text } from "react-native";
 
-const ProfilePublicacion = ({ photo, description, likes, comments, onPress }) => {
+//Publicación que se debería mostrar solo si la misma es del usuario logueado
+const ProfilePublicacion = ({
+  photo,
+  description,
+  likes,
+  comments,
+  onPress,
+}) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image
@@ -49,4 +56,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProfilePublicacion;
-
